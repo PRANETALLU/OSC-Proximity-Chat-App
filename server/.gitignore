@@ -132,6 +132,9 @@ dist
 # Build files
 build
 
+# Private Key JSON
+./firebase-secrets.json
+
 # Other
 .env
 build/

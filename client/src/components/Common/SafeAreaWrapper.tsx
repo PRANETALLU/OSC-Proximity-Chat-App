@@ -1,29 +1,40 @@
-import React from 'react';
-import { SafeAreaView, Platform, StyleSheet } from 'react-native';
+import React from "react";
+import { useSettings } from "../../contexts/SettingsContext";
+import { SafeAreaView, Platform, StyleSheet, StatusBar } from "react-native";
+import { SafeAreaWrapperProps } from "../../utils/types";
 
-interface SafeAreaWrapperProps {
-    children: React.ReactNode;
-    
-}
+const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({ children }) => {
+  const settings = useSettings();
 
-const SafeAreaWrapper:React.FC<SafeAreaWrapperProps> = ({ children }) => {
-  return Platform.OS === 'ios' ? (
+  const mainSafeAreaProps = {
+    ...styles.mainSafeArea,
+    backgroundColor:
+      settings && settings.theme != "light" ? "#191d20" : "white",
+  };
+
+  return Platform.OS === "ios" ? (
     <>
-      <SafeAreaView style={styles.topSafeArea} />
-      <SafeAreaView style={styles.mainSafeArea}>{children}</SafeAreaView>
+      <SafeAreaView style={mainSafeAreaProps}>{children}</SafeAreaView>
     </>
   ) : (
-    <>{children}</>
+    <>
+      <SafeAreaView style={styles.androidSafeArea}>{children}</SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   topSafeArea: {
+    // May be used later to adjust the top safe area
     flex: 0,
-    backgroundColor: '#000', // Replace with your desired color
   },
   mainSafeArea: {
     flex: 1,
+  },
+  androidSafeArea: {
+    flex: 1,
+    backgroundColor: "white", // Replace with your desired color
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 });
 

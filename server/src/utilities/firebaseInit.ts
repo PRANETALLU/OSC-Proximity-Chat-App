@@ -1,28 +1,15 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore, CollectionReference, collection, DocumentData } from 'firebase/firestore';
-import 'dotenv/config';
+const admin = require('firebase-admin');
+const serviceAccount = require("../../firebase-secrets.json");
 
-export const firebaseApp = initializeApp({
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  projectId: process.env.projectId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  appId: process.env.appId
+export const adminApp = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
 });
 
-export const firestore = getFirestore();
+export const db = admin.firestore();
+export const connectedUsersCollection = db.collection('ConnectedUsers');
+export const messagesCollection = db.collection('Messages');
 
-const createCollection = <T = DocumentData>(collectionName: string) => {
-  return collection(firestore, collectionName) as CollectionReference<T>;
-};
+console.log("[FIREBASE] Firestore synced.")
 
-import { Message } from '../types/Message';
-import { User } from '../types/User';
-
-export const messages = createCollection<Message>('messages');
-export const users = createCollection<User>('users');
-
-console.log("Database synced");
-
-
+// TODO: refactor file name to 'firebase' for accuracy.
+// TODO: move key info to .env
